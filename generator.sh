@@ -65,7 +65,7 @@ composite -gravity center \
 TEXT_HEIGHT="$(identify -format '%h' /tmp/text.png)"
 
 composite \
-  -gravity center -geometry +0+"$TEXT_HEIGHT" \
+  -gravity center -geometry +0+"$(( (TEXT_HEIGHT / 2) + 48 ))" \
   /tmp/author.png image.png \
   image.png
 
