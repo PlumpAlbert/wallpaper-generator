@@ -5,9 +5,21 @@ WIDTH=$(xdpyinfo | awk '/dimensions/ {split($2, D, "x"); print D[1]}')
 HEIGHT=$(xdpyinfo | awk '/dimensions/ {split($2, D, "x"); print D[2]}')
 
 # Generate gradient
-convert -size "$HEIGHT"x"$WIDTH" gradient: -rotate 90 \
-  \( +size xc:'#8a2387' xc:'#e94057' xc:'#f27121' +append \) -clut \
-  /tmp/gradient.png
+gradient() {
+  GRADIENTS_LEN=$(jq -cr '. | length' gradients.json)
+  COLORS="$(jq -cr ".[$(( RANDOM % GRADIENTS_LEN  ))].colors" gradients.json | sed -e 's/[][]//g')"
+  COLORS=(${COLORS//,/ })
+  IM_COLORS=""
+  for c in "${COLORS[@]}"; do
+    export IM_COLORS="$IM_COLORS xc:$c"
+  done
+
+  # Generating gradient image
+  ARGS=$(echo "$IM_COLORS" | xargs -i echo "-size 1080x1920 gradient: -rotate 90 \\( +size {} +append \\) -clut /tmp/gradient.png")
+  echo $ARGS | xargs convert
+}
+
+gradient
 
 # Get quote text
 if ! [ -f "$HOME/.cache/qod" ]; then
