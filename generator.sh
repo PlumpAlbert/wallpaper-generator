@@ -52,7 +52,7 @@ convert \
 
 convert \
   -background none \
-  -fill white -font 'Google-Sans-Regular' \
+  -fill white -font 'Google-Sans-Italic' \
   -pointsize 16 \
   label:"$(echo "$AUTHOR" | fold -w 64 -s)" \
   /tmp/author.png
