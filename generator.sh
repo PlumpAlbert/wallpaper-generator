@@ -28,7 +28,7 @@ HEIGHT=$(xdpyinfo | awk '/dimensions/ {split($2, D, "x"); print D[2]}')
 # Generate gradient
 gradient() {
   GRADIENTS_LEN=$(jq -cr '. | length' gradients.json)
-  COLORS="$(jq -cr ".[$(( RANDOM % GRADIENTS_LEN  ))].colors" gradients.json | sed -e 's/[][]//g')"
+  COLORS="$(jq -cr ".[$(( RANDOM % GRADIENTS_LEN ))].colors" gradients.json | sed -e 's/[][]//g')"
   COLORS=(${COLORS//,/ })
   IM_COLORS=""
   for c in "${COLORS[@]}"; do
@@ -36,8 +36,9 @@ gradient() {
   done
 
   # Generating gradient image
-  ARGS=$(echo "$IM_COLORS" | xargs -i echo "-size 1080x1920 gradient: -rotate 90 \\( +size {} +append \\) -clut /tmp/gradient.png")
-  echo $ARGS | xargs convert
+  echo "$IM_COLORS" | \
+    xargs -i echo "-size \"$HEIGHT\"x$WIDTH gradient: -rotate 90 \\( +size {} +append \\) -clut -blur 3x3 /tmp/gradient.png" | \
+    xargs convert
 }
 
 gradient
