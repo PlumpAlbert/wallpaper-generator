@@ -46,16 +46,16 @@ gradient
 # Add text over the image
 convert \
   -background none -gravity center \
-  -fill white -font 'Google-Sans-Regular' \
+  -fill white \
   -pointsize 32 \
-  label:"$(echo "$TEXT" | fold -w 72 -s)" \
+  pango:"<span face='Google Sans' fallback='true'>$(echo "$TEXT" | fold -bsw 72)</span>" \
   /tmp/text.png
 
 convert \
   -background none \
-  -fill white -font 'Google-Sans-Italic' \
+  -fill white \
   -pointsize 16 \
-  label:"$(echo "$AUTHOR" | fold -w 64 -s)" \
+  pango:"<span style='italic' face='Google Sans' fallback='true'>$(echo "$AUTHOR" | fold -bsw 64)</span>" \
   /tmp/author.png
 
 composite -gravity center \
