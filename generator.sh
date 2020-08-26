@@ -17,8 +17,8 @@ while [ $# -ne 0 ]; do
   esac
   shift
 done
-[[ -z "$TEXT" && ! -t 0 ]] && export TEXT="$(cat -)" \
-  || fail "No message was provided"
+[[ -z "$TEXT" && ! -t 0 ]] && export TEXT="$(cat -)"
+[ -z "$TEXT" ] && fail "No message was provided"
 [ -z "$AUTHOR" ] && export AUTHOR="$(whoami)"
 
 # Get display dimensions
