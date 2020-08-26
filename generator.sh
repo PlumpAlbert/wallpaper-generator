@@ -1,4 +1,25 @@
 #!/bin/sh
+fail() {
+  echo "$1"
+  exit 1
+}
+
+# Parse arguments
+while [ $# -ne 0 ]; do
+  case $1 in
+    -a | --author)
+      shift
+      export AUTHOR="$1"
+      ;;
+    *)
+      export TEXT="$1"
+      ;;
+  esac
+  shift
+done
+[[ -z "$TEXT" && ! -t 0 ]] && export TEXT="$(cat -)" \
+  || fail "No message was provided"
+[ -z "$AUTHOR" ] && export AUTHOR="$(whoami)"
 
 # Get display dimensions
 WIDTH=$(xdpyinfo | awk '/dimensions/ {split($2, D, "x"); print D[1]}')
@@ -21,29 +42,19 @@ gradient() {
 
 gradient
 
-# Get quote text
-if ! [ -f "$HOME/.cache/qod" ]; then
-  export data="$(curl -sL 'https://quotes.rest/qod')"
-  echo $data > "$HOME/.cache/qod"
-else
-  export data="$(cat "$HOME/.cache/qod")"
-fi
-TEXT="$(echo "$data" | jq -rc '.contents.quotes[0].quote' | fold -w 64 -s)"
-AUTHOR="$(echo "$data" | jq -rc '.contents.quotes[0].author' | fold -w 64 -s)"
-
 # Add text over the image
 convert \
   -background none -gravity center \
   -fill white -font 'Google-Sans-Regular' \
   -pointsize 32 \
-  label:"$TEXT" \
+  label:"$(echo "$TEXT" | fold -w 72 -s)" \
   /tmp/text.png
 
 convert \
   -background none \
   -fill white -font 'Google-Sans-Regular' \
   -pointsize 16 \
-  label:"$AUTHOR" \
+  label:"$(echo "$AUTHOR" | fold -w 64 -s)" \
   /tmp/author.png
 
 composite -gravity center \
