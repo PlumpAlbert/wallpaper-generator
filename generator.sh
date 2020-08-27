@@ -5,6 +5,7 @@ fail() {
 }
 
 SCRIPT_LOCATION="${0%/*}"
+FONT_FACE="Google Sans"
 
 # Parse arguments
 while [ $# -ne 0 ]; do
@@ -12,6 +13,10 @@ while [ $# -ne 0 ]; do
     -a | --author)
       shift
       export AUTHOR="$1"
+      ;;
+    -fn | --font-name)
+      shift
+      export FONT_FACE="$1"
       ;;
     *)
       export TEXT="$1"
@@ -50,14 +55,14 @@ convert \
   -background none -gravity center \
   -fill white \
   -pointsize 32 \
-  pango:"<span face='Google Sans' fallback='true'>$(echo "$TEXT" | fold -bsw 72)</span>" \
+  pango:"<span face='$FONT_FACE' fallback='true'>$(echo "$TEXT" | fold -bsw 72)</span>" \
   /tmp/text.png
 
 convert \
   -background none \
   -fill white \
   -pointsize 16 \
-  pango:"<span style='italic' face='Google Sans' fallback='true'>$(echo "$AUTHOR" | fold -bsw 64)</span>" \
+  pango:"<span style='italic' face='$FONT_FACE' fallback='true'>$(echo "$AUTHOR" | fold -bsw 64)</span>" \
   /tmp/author.png
 
 composite -gravity center \
