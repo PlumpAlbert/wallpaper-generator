@@ -6,6 +6,7 @@ fail() {
 
 SCRIPT_LOCATION="${0%/*}"
 FONT_FACE="Google Sans"
+OUT_FILE="wallpaper.png"
 
 # Parse arguments
 while [ $# -ne 0 ]; do
@@ -17,6 +18,10 @@ while [ $# -ne 0 ]; do
     -fn | --font-name)
       shift
       export FONT_FACE="$1"
+      ;;
+    -o | --out-file)
+      shift
+      [ -d "$1" ] && export OUT_FILE="$1/wallpaper.png" || export OUT_FILE="$1"
       ;;
     *)
       export TEXT="$1"
@@ -67,12 +72,12 @@ convert \
 
 composite -gravity center \
   /tmp/text.png /tmp/gradient.png \
-  image.png
+  "$OUT_FILE"
 
 TEXT_HEIGHT="$(identify -format '%h' /tmp/text.png)"
 
 composite \
   -gravity center -geometry +0+"$(( (TEXT_HEIGHT / 2) + 48 ))" \
-  /tmp/author.png image.png \
-  image.png
+  /tmp/author.png "$OUT_FILE" \
+  "$OUT_FILE"
 
