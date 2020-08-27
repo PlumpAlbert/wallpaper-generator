@@ -81,3 +81,4 @@ composite \
   /tmp/author.png "$OUT_FILE" \
   "$OUT_FILE"
 
+rm /tmp/{author,text,gradient}.png
