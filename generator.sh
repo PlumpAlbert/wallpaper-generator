@@ -4,6 +4,8 @@ fail() {
   exit 1
 }
 
+SCRIPT_LOCATION="${0%/*}"
+
 # Parse arguments
 while [ $# -ne 0 ]; do
   case $1 in
@@ -27,8 +29,8 @@ HEIGHT=$(xdpyinfo | awk '/dimensions/ {split($2, D, "x"); print D[2]}')
 
 # Generate gradient
 gradient() {
-  GRADIENTS_LEN=$(jq -cr '. | length' gradients.json)
-  COLORS="$(jq -cr ".[$(( RANDOM % GRADIENTS_LEN ))].colors" gradients.json | sed -e 's/[][]//g')"
+  GRADIENTS_LEN=$(jq -cr '. | length' "$SCRIPT_LOCATION/gradients.json")
+  COLORS="$(jq -cr ".[$(( RANDOM % GRADIENTS_LEN ))].colors" "$SCRIPT_LOCATION/gradients.json" | sed -e 's/[][]//g')"
   COLORS=(${COLORS//,/ })
   IM_COLORS=""
   for c in "${COLORS[@]}"; do
